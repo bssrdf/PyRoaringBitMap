@@ -114,7 +114,7 @@ Install pyroaring (use this if you do not have ``pip``).
 
     python setup.py install # may require superuser rights, add option --user if you wish to install it on your local account
 
-On macOS (e.g. Mojave), this may fail with errors ```ld: library not found for -lstdc++```. Use the following to get
+On macOS (e.g. Mojave), this may fail with errors ``ld: library not found for -lstdc++``. Use the following to get
 around this error
 
 .. code:: bash
