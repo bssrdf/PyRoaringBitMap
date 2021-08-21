@@ -83,6 +83,7 @@ else:
     compile_args = ['-D__STDC_LIMIT_MACROS', '-D__STDC_CONSTANT_MACROS', '-D _GLIBCXX_ASSERTIONS']
     if PLATFORM_MACOSX:
         compile_args.append('-mmacosx-version-min=10.14')
+        compile_args.append('-Wdeprecated')
     else:
         compile_args.append('-std=c99')
     if 'DEBUG' in os.environ:
