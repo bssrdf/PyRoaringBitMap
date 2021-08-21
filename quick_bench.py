@@ -3,6 +3,7 @@
 import sys
 import timeit
 from pandas import DataFrame, Series
+import pandas as pd
 import random
 try:
     import tabulate
@@ -14,18 +15,18 @@ except ImportError:
 from pyroaring import BitMap
 
 classes = {'set': set, 'pyroaring': BitMap}
-nb_exp = 30
+nb_exp = 20
 size = int(1e6)
 density = 0.125
 universe_size = int(size/density)
-
+'''
 try:
     from roaringbitmap import RoaringBitmap
     classes['roaringbitmap'] = RoaringBitmap
 except ImportError:
     sys.stderr.write('Warning: could not import roaringbitmap\n')
     sys.stderr.write('         see https://github.com/andreasvc/roaringbitmap/\n')
-
+'''
 try:
     from sortedcontainers.sortedset import SortedSet
     classes['sortedcontainers'] = SortedSet
@@ -50,6 +51,7 @@ def run_exp(stmt, setup, number):
     try:
         return timeit.timeit(stmt=stmt, setup=setup, number=number)/number
     except Exception as e:
+        print('Exception Occurs')
         return float('nan')
 
 
@@ -69,6 +71,8 @@ constructor = 'x={class_name}(values)'
 simple_setup_constructor = 'x={class_name}(get_list());val=random.randint(0, universe_size)'
 double_setup_constructor = 'x={class_name}(get_list()); y={class_name}(get_list())'
 equal_setup_constructor = 'l=get_list();x={class_name}(l); y={class_name}(l)'
+experiments = [('union', (double_setup_constructor, 'z=x|y'))]
+'''
 experiments = [
     # Constructors
     ('range constructor', ('values=get_range()', constructor)),
@@ -98,6 +102,7 @@ experiments = [
     ('slice', (simple_setup_constructor, 'x[int(size/4):int(3*size/4):3]')),
     ('small slice', (simple_setup_constructor, 'x[int(size/100):int(3*size/100):3]')),
 ]
+'''
 exp_dict = dict(experiments)
 
 
@@ -119,7 +124,10 @@ def run_all():
         sys.stderr.write('experiment: %s\n' % op)
         result = {'operation': op}
         for cls in random.sample(list(classes), len(classes)):
+        #for cls in classes:
+            #print('class is {}'.format(cls))
             result[cls] = run(cls, op)
+            #print(result)
         df = df.append(result, ignore_index=True)
     return df
 
@@ -127,6 +135,13 @@ def run_all():
 if __name__ == '__main__':
     df = run_all()
     print()
+    '''
+    with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.precision', 3,
+                       ):
+        print(df)
+    '''
     if has_tabulate:
         print(tabulate.tabulate(df, headers='keys', tablefmt='rst', showindex='never', floatfmt=".2e"))
     else:

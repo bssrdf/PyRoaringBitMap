@@ -78,7 +78,7 @@ else:
     ext = 'cpp'
 
 if PLATFORM_WINDOWS:
-    compile_args = []
+    compile_args = ['/arch:AVX2']
 else:
     compile_args = ['-D__STDC_LIMIT_MACROS', '-D__STDC_CONSTANT_MACROS', '-D _GLIBCXX_ASSERTIONS']
     if PLATFORM_MACOSX:
